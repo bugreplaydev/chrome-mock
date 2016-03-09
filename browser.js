@@ -13,6 +13,7 @@ var Storage      = _dereq_('./chrome/Storage');
 var Commands = _dereq_('./chrome/Commands');
 var Notifications = _dereq_('./chrome/Notifications');
 var App = _dereq_('./chrome/App');
+var Debugger = _dereq_('./chrome/Debugger');
 
 module.exports = Chrome;
 
@@ -36,9 +37,10 @@ Chrome.prototype.resetMock = function () {
   this.commands = new Commands(this);
   this.notifications = new Notifications(this);
   this.app = new App(this);
+  this.debugger = new Debugger(this);
 };
 
-},{"./chrome/App":4,"./chrome/Commands":5,"./chrome/ContextMenus":6,"./chrome/I18n":7,"./chrome/Notifications":8,"./chrome/Runtime":9,"./chrome/Storage":10,"./chrome/Tabs":12,"./chrome/Windows":13}],3:[function(_dereq_,module,exports){
+},{"./chrome/App":4,"./chrome/Commands":5,"./chrome/ContextMenus":6,"./chrome/Debugger":7,"./chrome/I18n":8,"./chrome/Notifications":9,"./chrome/Runtime":10,"./chrome/Storage":11,"./chrome/Tabs":13,"./chrome/Windows":14}],3:[function(_dereq_,module,exports){
 var sinon = _dereq_('sinon');
 
 module.exports = Event;
@@ -73,7 +75,7 @@ Event.prototype.trigger = function () {
   });
 };
 
-},{"sinon":20}],4:[function(_dereq_,module,exports){
+},{"sinon":21}],4:[function(_dereq_,module,exports){
 module.exports = App;
 
 function App(chrome) {
@@ -187,7 +189,17 @@ function ContextMenus(chrome) {
 
 }
 
-},{"../Event":3,"sinon":20}],7:[function(_dereq_,module,exports){
+},{"../Event":3,"sinon":21}],7:[function(_dereq_,module,exports){
+var Event = _dereq_('../Event');
+module.exports = Debugger;
+
+function Debugger(chrome) {
+    this.chrome = chrome;
+    this.onDetach = new Event();
+}
+
+
+},{"../Event":3}],8:[function(_dereq_,module,exports){
 (function (process){
 var Event = _dereq_('../Event');
 var sinon = _dereq_('sinon');
@@ -262,7 +274,7 @@ function I18n(chrome) {
 }
 
 }).call(this,_dereq_("JkpR2F"))
-},{"../Event":3,"JkpR2F":16,"path":15,"sinon":20}],8:[function(_dereq_,module,exports){
+},{"../Event":3,"JkpR2F":17,"path":16,"sinon":21}],9:[function(_dereq_,module,exports){
 var Event = _dereq_('../Event');
 
 module.exports = Notifications;
@@ -272,7 +284,7 @@ function Notifications(chrome) {
     this.onClicked = new Event();
 }
 
-},{"../Event":3}],9:[function(_dereq_,module,exports){
+},{"../Event":3}],10:[function(_dereq_,module,exports){
 var Event = _dereq_('../Event');
 var sinon = _dereq_('sinon');
 
@@ -568,7 +580,7 @@ function Runtime(chrome) {
 
 }
 
-},{"../Event":3,"sinon":20}],10:[function(_dereq_,module,exports){
+},{"../Event":3,"sinon":21}],11:[function(_dereq_,module,exports){
 var StorageArea = _dereq_('./StorageArea');
 var Event = _dereq_('../Event');
 
@@ -587,7 +599,7 @@ function Storage(chrome) {
   this.LATENCY = 0;
 }
 
-},{"../Event":3,"./StorageArea":11}],11:[function(_dereq_,module,exports){
+},{"../Event":3,"./StorageArea":12}],12:[function(_dereq_,module,exports){
 (function (process){
 var Event = _dereq_('../Event');
 var sinon = _dereq_('sinon');
@@ -712,7 +724,7 @@ function StorageArea(chrome, storage, namespace) {
 }
 
 }).call(this,_dereq_("JkpR2F"))
-},{"../Event":3,"JkpR2F":16,"lodash":19,"sinon":20}],12:[function(_dereq_,module,exports){
+},{"../Event":3,"JkpR2F":17,"lodash":20,"sinon":21}],13:[function(_dereq_,module,exports){
 var Event = _dereq_('../Event');
 var sinon = _dereq_('sinon');
 module.exports = Tabs;
@@ -1152,7 +1164,7 @@ function Tabs(chrome) {
 
 }
 
-},{"../Event":3,"sinon":20}],13:[function(_dereq_,module,exports){
+},{"../Event":3,"sinon":21}],14:[function(_dereq_,module,exports){
 var Event = _dereq_('../Event');
 var sinon = _dereq_('sinon');
 module.exports = Windows;
@@ -1252,7 +1264,7 @@ function Windows(chrome) {
     });
 
 }
-},{"../Event":3,"sinon":20}],14:[function(_dereq_,module,exports){
+},{"../Event":3,"sinon":21}],15:[function(_dereq_,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -1277,7 +1289,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],15:[function(_dereq_,module,exports){
+},{}],16:[function(_dereq_,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1505,7 +1517,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,_dereq_("JkpR2F"))
-},{"JkpR2F":16}],16:[function(_dereq_,module,exports){
+},{"JkpR2F":17}],17:[function(_dereq_,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -1570,14 +1582,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],17:[function(_dereq_,module,exports){
+},{}],18:[function(_dereq_,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],18:[function(_dereq_,module,exports){
+},{}],19:[function(_dereq_,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2167,7 +2179,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,_dereq_("JkpR2F"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":17,"JkpR2F":16,"inherits":14}],19:[function(_dereq_,module,exports){
+},{"./support/isBuffer":18,"JkpR2F":17,"inherits":15}],20:[function(_dereq_,module,exports){
 (function (global){
 /**
  * @license
@@ -8957,7 +8969,7 @@ function hasOwnProperty(obj, prop) {
 }.call(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],20:[function(_dereq_,module,exports){
+},{}],21:[function(_dereq_,module,exports){
 /**
  * Sinon core utilities. For internal use only.
  *
@@ -9006,7 +9018,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     return sinonModule;
 }());
 
-},{"./sinon/assert":21,"./sinon/behavior":22,"./sinon/call":23,"./sinon/collection":24,"./sinon/extend":25,"./sinon/format":26,"./sinon/log_error":27,"./sinon/match":28,"./sinon/mock":29,"./sinon/sandbox":30,"./sinon/spy":31,"./sinon/stub":32,"./sinon/test":33,"./sinon/test_case":34,"./sinon/times_in_words":35,"./sinon/typeOf":36,"./sinon/util/core":37,"./sinon/walk":44}],21:[function(_dereq_,module,exports){
+},{"./sinon/assert":22,"./sinon/behavior":23,"./sinon/call":24,"./sinon/collection":25,"./sinon/extend":26,"./sinon/format":27,"./sinon/log_error":28,"./sinon/match":29,"./sinon/mock":30,"./sinon/sandbox":31,"./sinon/spy":32,"./sinon/stub":33,"./sinon/test":34,"./sinon/test_case":35,"./sinon/times_in_words":36,"./sinon/typeOf":37,"./sinon/util/core":38,"./sinon/walk":45}],22:[function(_dereq_,module,exports){
 (function (global){
 /**
  * @depend times_in_words.js
@@ -9236,7 +9248,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
 ));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./format":26,"./match":28,"./util/core":37}],22:[function(_dereq_,module,exports){
+},{"./format":27,"./match":29,"./util/core":38}],23:[function(_dereq_,module,exports){
 (function (process){
 /**
  * @depend util/core.js
@@ -9611,7 +9623,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
 ));
 
 }).call(this,_dereq_("JkpR2F"))
-},{"./extend":25,"./util/core":37,"JkpR2F":16}],23:[function(_dereq_,module,exports){
+},{"./extend":26,"./util/core":38,"JkpR2F":17}],24:[function(_dereq_,module,exports){
 /**
   * @depend util/core.js
   * @depend match.js
@@ -9852,7 +9864,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     typeof sinon === "object" && sinon // eslint-disable-line no-undef
 ));
 
-},{"./format":26,"./match":28,"./util/core":37}],24:[function(_dereq_,module,exports){
+},{"./format":27,"./match":29,"./util/core":38}],25:[function(_dereq_,module,exports){
 /**
  * @depend util/core.js
  * @depend spy.js
@@ -10027,7 +10039,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     typeof sinon === "object" && sinon // eslint-disable-line no-undef
 ));
 
-},{"./mock":29,"./spy":31,"./stub":32,"./util/core":37}],25:[function(_dereq_,module,exports){
+},{"./mock":30,"./spy":32,"./stub":33,"./util/core":38}],26:[function(_dereq_,module,exports){
 /**
  * @depend util/core.js
  */
@@ -10140,7 +10152,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     typeof sinon === "object" && sinon // eslint-disable-line no-undef
 ));
 
-},{"./util/core":37}],26:[function(_dereq_,module,exports){
+},{"./util/core":38}],27:[function(_dereq_,module,exports){
 /**
  * @depend util/core.js
  */
@@ -10236,7 +10248,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     typeof formatio === "object" && formatio // eslint-disable-line no-undef
 ));
 
-},{"./util/core":37,"formatio":45,"util":18}],27:[function(_dereq_,module,exports){
+},{"./util/core":38,"formatio":46,"util":19}],28:[function(_dereq_,module,exports){
 /**
  * @depend util/core.js
  */
@@ -10322,7 +10334,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     typeof sinon === "object" && sinon // eslint-disable-line no-undef
 ));
 
-},{"./util/core":37}],28:[function(_dereq_,module,exports){
+},{"./util/core":38}],29:[function(_dereq_,module,exports){
 /**
  * @depend util/core.js
  * @depend typeOf.js
@@ -10585,7 +10597,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     typeof sinon === "object" && sinon // eslint-disable-line no-undef
 ));
 
-},{"./typeOf":36,"./util/core":37}],29:[function(_dereq_,module,exports){
+},{"./typeOf":37,"./util/core":38}],30:[function(_dereq_,module,exports){
 /**
  * @depend times_in_words.js
  * @depend util/core.js
@@ -11078,7 +11090,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     typeof sinon === "object" && sinon // eslint-disable-line no-undef
 ));
 
-},{"./call":23,"./extend":25,"./format":26,"./match":28,"./spy":31,"./stub":32,"./times_in_words":35,"./util/core":37}],30:[function(_dereq_,module,exports){
+},{"./call":24,"./extend":26,"./format":27,"./match":29,"./spy":32,"./stub":33,"./times_in_words":36,"./util/core":38}],31:[function(_dereq_,module,exports){
 /**
  * @depend util/core.js
  * @depend extend.js
@@ -11250,7 +11262,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     typeof sinon === "object" && sinon // eslint-disable-line no-undef
 ));
 
-},{"./collection":24,"./extend":25,"./util/core":37,"./util/fake_server_with_clock":40,"./util/fake_timers":41}],31:[function(_dereq_,module,exports){
+},{"./collection":25,"./extend":26,"./util/core":38,"./util/fake_server_with_clock":41,"./util/fake_timers":42}],32:[function(_dereq_,module,exports){
 /**
   * @depend times_in_words.js
   * @depend util/core.js
@@ -11715,7 +11727,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     typeof sinon === "object" && sinon // eslint-disable-line no-undef
 ));
 
-},{"./call":23,"./extend":25,"./format":26,"./times_in_words":35,"./util/core":37}],32:[function(_dereq_,module,exports){
+},{"./call":24,"./extend":26,"./format":27,"./times_in_words":36,"./util/core":38}],33:[function(_dereq_,module,exports){
 /**
  * @depend util/core.js
  * @depend extend.js
@@ -11917,7 +11929,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     typeof sinon === "object" && sinon // eslint-disable-line no-undef
 ));
 
-},{"./behavior":22,"./extend":25,"./spy":31,"./util/core":37}],33:[function(_dereq_,module,exports){
+},{"./behavior":23,"./extend":26,"./spy":32,"./util/core":38}],34:[function(_dereq_,module,exports){
 /**
  * @depend util/core.js
  * @depend sandbox.js
@@ -12019,7 +12031,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     }
 }(typeof sinon === "object" && sinon || null)); // eslint-disable-line no-undef
 
-},{"./sandbox":30,"./util/core":37}],34:[function(_dereq_,module,exports){
+},{"./sandbox":31,"./util/core":38}],35:[function(_dereq_,module,exports){
 /**
  * @depend util/core.js
  * @depend test.js
@@ -12127,7 +12139,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     typeof sinon === "object" && sinon // eslint-disable-line no-undef
 ));
 
-},{"./test":33,"./util/core":37}],35:[function(_dereq_,module,exports){
+},{"./test":34,"./util/core":38}],36:[function(_dereq_,module,exports){
 /**
  * @depend util/core.js
  */
@@ -12178,7 +12190,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     typeof sinon === "object" && sinon // eslint-disable-line no-undef
 ));
 
-},{"./util/core":37}],36:[function(_dereq_,module,exports){
+},{"./util/core":38}],37:[function(_dereq_,module,exports){
 /**
  * @depend util/core.js
  */
@@ -12233,7 +12245,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     typeof sinon === "object" && sinon // eslint-disable-line no-undef
 ));
 
-},{"./util/core":37}],37:[function(_dereq_,module,exports){
+},{"./util/core":38}],38:[function(_dereq_,module,exports){
 /**
  * @depend ../../sinon.js
  */
@@ -12636,7 +12648,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
     typeof sinon === "object" && sinon // eslint-disable-line no-undef
 ));
 
-},{}],38:[function(_dereq_,module,exports){
+},{}],39:[function(_dereq_,module,exports){
 /**
  * Minimal Event interface implementation
  *
@@ -12749,7 +12761,7 @@ if (typeof sinon === "undefined") {
     }
 }());
 
-},{"./core":37}],39:[function(_dereq_,module,exports){
+},{"./core":38}],40:[function(_dereq_,module,exports){
 /**
  * @depend fake_xdomain_request.js
  * @depend fake_xml_http_request.js
@@ -12998,7 +13010,7 @@ if (typeof sinon === "undefined") {
     }
 }());
 
-},{"../format":26,"./core":37,"./fake_xdomain_request":42,"./fake_xml_http_request":43}],40:[function(_dereq_,module,exports){
+},{"../format":27,"./core":38,"./fake_xdomain_request":43,"./fake_xml_http_request":44}],41:[function(_dereq_,module,exports){
 /**
  * @depend fake_server.js
  * @depend fake_timers.js
@@ -13101,7 +13113,7 @@ if (typeof sinon === "undefined") {
     }
 }());
 
-},{"./core":37,"./fake_server":39,"./fake_timers":41}],41:[function(_dereq_,module,exports){
+},{"./core":38,"./fake_server":40,"./fake_timers":42}],42:[function(_dereq_,module,exports){
 /**
  * Fake timer API
  * setTimeout
@@ -13176,7 +13188,7 @@ if (typeof sinon === "undefined") {
     }
 }());
 
-},{"./core":37,"lolex":46}],42:[function(_dereq_,module,exports){
+},{"./core":38,"lolex":47}],43:[function(_dereq_,module,exports){
 (function (global){
 /**
  * @depend core.js
@@ -13419,7 +13431,7 @@ if (typeof sinon === "undefined") {
 })(typeof global !== "undefined" ? global : self);
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../extend":25,"../log_error":27,"./core":37,"./event":38}],43:[function(_dereq_,module,exports){
+},{"../extend":26,"../log_error":28,"./core":38,"./event":39}],44:[function(_dereq_,module,exports){
 (function (global){
 /**
  * @depend core.js
@@ -14139,7 +14151,7 @@ if (typeof sinon === "undefined") {
 ));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../extend":25,"../log_error":27,"./core":37,"./event":38}],44:[function(_dereq_,module,exports){
+},{"../extend":26,"../log_error":28,"./core":38,"./event":39}],45:[function(_dereq_,module,exports){
 /**
  * @depend util/core.js
  */
@@ -14220,7 +14232,7 @@ if (typeof sinon === "undefined") {
     typeof sinon === "object" && sinon // eslint-disable-line no-undef
 ));
 
-},{"./util/core":37}],45:[function(_dereq_,module,exports){
+},{"./util/core":38}],46:[function(_dereq_,module,exports){
 (function (global){
 ((typeof define === "function" && define.amd && function (m) {
     define("formatio", ["samsam"], m);
@@ -14437,7 +14449,7 @@ if (typeof sinon === "undefined") {
 });
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"samsam":47}],46:[function(_dereq_,module,exports){
+},{"samsam":48}],47:[function(_dereq_,module,exports){
 (function (global){
 /*global global, window*/
 /**
@@ -14960,7 +14972,7 @@ if (typeof sinon === "undefined") {
 }(global || this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],47:[function(_dereq_,module,exports){
+},{}],48:[function(_dereq_,module,exports){
 ((typeof define === "function" && define.amd && function (m) { define("samsam", m); }) ||
  (typeof module === "object" &&
       function (m) { module.exports = m(); }) || // Node
