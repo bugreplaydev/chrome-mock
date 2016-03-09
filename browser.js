@@ -80,7 +80,7 @@ function App(chrome) {
     this.chrome = chrome;
     this.getDetails = function getDetails() {
         return {
-            version: 'chrome-mock'
+            version: '0.0.1'
         };
     };
 }
