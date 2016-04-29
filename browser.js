@@ -198,7 +198,6 @@ function Debugger(chrome) {
     this.onDetach = new Event();
 }
 
-
 },{"../Event":3}],8:[function(_dereq_,module,exports){
 (function (process){
 var Event = _dereq_('../Event');
