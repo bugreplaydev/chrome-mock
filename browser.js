@@ -50,6 +50,7 @@ module.exports = Event;
 function Event() {
   this.listeners   = [];
   this.addListener = sinon.spy(this.addListener.bind(this));
+  this.removeListener= sinon.spy(this.removeListener.bind(this));
 }
 
 /**
@@ -63,6 +64,11 @@ Event.prototype.listeners = null;
  */
 Event.prototype.addListener = function (fn) {
   this.listeners.push(fn);
+};
+
+Event.prototype.removeListener= function (fn) {
+  void(fn);
+//  this.listeners.push(fn);
 };
 
 /**
@@ -591,6 +597,16 @@ function Runtime(chrome) {
    */
   this.onRestartRequired = new Event();
 
+  function MockPort(){
+    this.onDisconnect = new Event();
+    this.onMessage = new Event();
+    this.disconnect = function(){};
+  }
+
+  this.mockPort = function() {
+    return new MockPort();
+    
+  };
 }
 
 },{"../Event":3,"sinon":22}],12:[function(_dereq_,module,exports){
