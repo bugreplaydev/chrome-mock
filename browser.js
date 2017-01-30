@@ -301,6 +301,8 @@ module.exports = Notifications;
 function Notifications(chrome) {
     this.chrome = chrome;
     this.onClicked = new Event();
+    this.onButtonClicked = new Event();
+    this.onClosed = new Event();
 }
 
 },{"../Event":3}],11:[function(_dereq_,module,exports){
@@ -1292,7 +1294,10 @@ function Windows(chrome) {
         }
     });
 
+    this.onFocusChanged = new Event();
+
 }
+
 },{"../Event":3,"sinon":22}],16:[function(_dereq_,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
