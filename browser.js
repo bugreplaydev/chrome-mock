@@ -293,7 +293,7 @@ function I18n(chrome) {
 }
 
 }).call(this,_dereq_("JkpR2F"))
-},{"../Event":3,"JkpR2F":18,"path":17,"sinon":22}],10:[function(_dereq_,module,exports){
+},{"../Event":3,"JkpR2F":17,"path":16,"sinon":22}],10:[function(_dereq_,module,exports){
 var Event = _dereq_('../Event');
 
 module.exports = Notifications;
@@ -599,11 +599,11 @@ function Runtime(chrome) {
    */
   this.onRestartRequired = new Event();
 
-  function MockPort(){
-    this.onDisconnect = new Event();
-    this.onMessage = new Event();
-    this.disconnect = function(){};
-  }
+  function MockPort(){}
+  MockPort.prototype.onConnect = new Event();
+  MockPort.prototype.onDisconnect = new Event();
+  MockPort.prototype.onMessage = new Event();
+  MockPort.prototype.disconnect = function(){};
 
   this.mockPort = function() {
     return new MockPort();
@@ -755,7 +755,7 @@ function StorageArea(chrome, storage, namespace) {
 }
 
 }).call(this,_dereq_("JkpR2F"))
-},{"../Event":3,"JkpR2F":18,"lodash":21,"sinon":22}],14:[function(_dereq_,module,exports){
+},{"../Event":3,"JkpR2F":17,"lodash":21,"sinon":22}],14:[function(_dereq_,module,exports){
 var Event = _dereq_('../Event');
 var sinon = _dereq_('sinon');
 module.exports = Tabs;
@@ -1299,31 +1299,6 @@ function Windows(chrome) {
 }
 
 },{"../Event":3,"sinon":22}],16:[function(_dereq_,module,exports){
-if (typeof Object.create === 'function') {
-  // implementation from standard node.js 'util' module
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    ctor.prototype = Object.create(superCtor.prototype, {
-      constructor: {
-        value: ctor,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-  };
-} else {
-  // old school shim for old browsers
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    var TempCtor = function () {}
-    TempCtor.prototype = superCtor.prototype
-    ctor.prototype = new TempCtor()
-    ctor.prototype.constructor = ctor
-  }
-}
-
-},{}],17:[function(_dereq_,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1551,7 +1526,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,_dereq_("JkpR2F"))
-},{"JkpR2F":18}],18:[function(_dereq_,module,exports){
+},{"JkpR2F":17}],17:[function(_dereq_,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -1615,6 +1590,31 @@ process.cwd = function () { return '/' };
 process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
+
+},{}],18:[function(_dereq_,module,exports){
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
 
 },{}],19:[function(_dereq_,module,exports){
 module.exports = function isBuffer(arg) {
@@ -2213,7 +2213,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,_dereq_("JkpR2F"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":19,"JkpR2F":18,"inherits":16}],21:[function(_dereq_,module,exports){
+},{"./support/isBuffer":19,"JkpR2F":17,"inherits":18}],21:[function(_dereq_,module,exports){
 (function (global){
 /**
  * @license
@@ -9101,6 +9101,24 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
             }
         }
 
+        function verifyIsValidAssertion(assertionMethod, assertionArgs) {
+            switch (assertionMethod) {
+                case "notCalled":
+                case "called":
+                case "calledOnce":
+                case "calledTwice":
+                case "calledThrice":
+                    if (assertionArgs.length !== 0) {
+                        assert.fail(assertionMethod +
+                                    " takes 1 argument but was called with " +
+                                    (assertionArgs.length + 1) + " arguments");
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
         function failAssertion(object, msg) {
             object = object || global;
             var failMethod = object.fail || assert.fail;
@@ -9117,6 +9135,8 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
                 verifyIsStub(fake);
 
                 var args = slice.call(arguments, 1);
+                verifyIsValidAssertion(name, args);
+
                 var failed = false;
 
                 if (typeof method === "function") {
@@ -9657,7 +9677,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
 ));
 
 }).call(this,_dereq_("JkpR2F"))
-},{"./extend":27,"./util/core":39,"JkpR2F":18}],25:[function(_dereq_,module,exports){
+},{"./extend":27,"./util/core":39,"JkpR2F":17}],25:[function(_dereq_,module,exports){
 /**
   * @depend util/core.js
   * @depend match.js
@@ -11220,6 +11240,10 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
             },
 
             restore: function () {
+                if (arguments.length) {
+                    throw new Error("sandbox.restore() does not take any parameters. Perhaps you meant stub.restore()");
+                }
+
                 sinon.collection.restore.apply(this, arguments);
                 this.restoreContext();
             },
@@ -12014,13 +12038,11 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
                     exception = e;
                 }
 
-                if (typeof oldDone !== "function") {
-                    if (typeof exception !== "undefined") {
-                        sandbox.restore();
-                        throw exception;
-                    } else {
-                        sandbox.verifyAndRestore();
-                    }
+                if (typeof exception !== "undefined") {
+                    sandbox.restore();
+                    throw exception;
+                } else if (typeof oldDone !== "function") {
+                    sandbox.verifyAndRestore();
                 }
 
                 return result;
@@ -12376,6 +12398,13 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
 
             var error, wrappedMethod, i;
 
+            function simplePropertyAssignment() {
+                wrappedMethod = object[property];
+                checkWrappedMethod(wrappedMethod);
+                object[property] = method;
+                method.displayName = property;
+            }
+
             // IE 8 does not support hasOwnProperty on the window object and Firefox has a problem
             // when using hasOwn.call on objects from other frames.
             var owned = object.hasOwnProperty ? object.hasOwnProperty(property) : hasOwn.call(object, property);
@@ -12408,11 +12437,17 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
                     mirrorProperties(methodDesc[types[i]], wrappedMethodDesc[types[i]]);
                 }
                 Object.defineProperty(object, property, methodDesc);
+
+                // catch failing assignment
+                // this is the converse of the check in `.restore` below
+                if ( typeof method === "function" && object[property] !== method ) {
+                    // correct any wrongdoings caused by the defineProperty call above,
+                    // such as adding new items (if object was a Storage object)
+                    delete object[property];
+                    simplePropertyAssignment();
+                }
             } else {
-                wrappedMethod = object[property];
-                checkWrappedMethod(wrappedMethod);
-                object[property] = method;
-                method.displayName = property;
+                simplePropertyAssignment();
             }
 
             method.displayName = property;
@@ -12502,7 +12537,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
             }
 
             for (prop in a) {
-                if (a.hasOwnProperty(prop)) {
+                if (hasOwn.call(a, prop)) {
                     aLength += 1;
 
                     if (!(prop in b)) {
@@ -12516,7 +12551,7 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
             }
 
             for (prop in b) {
-                if (b.hasOwnProperty(prop)) {
+                if (hasOwn.call(b, prop)) {
                     bLength += 1;
                 }
             }
@@ -12726,8 +12761,8 @@ if (typeof sinon === "undefined") {
 
         sinon.ProgressEvent = function ProgressEvent(type, progressEventRaw, target) {
             this.initEvent(type, false, false, target);
-            this.loaded = progressEventRaw.loaded || null;
-            this.total = progressEventRaw.total || null;
+            this.loaded = typeof progressEventRaw.loaded === "number" ? progressEventRaw.loaded : null;
+            this.total = typeof progressEventRaw.total === "number" ? progressEventRaw.total : null;
             this.lengthComputable = !!progressEventRaw.total;
         };
 
@@ -13504,7 +13539,13 @@ if (typeof sinon === "undefined") {
     var supportsCustomEvent = typeof CustomEvent !== "undefined";
     var supportsFormData = typeof FormData !== "undefined";
     var supportsArrayBuffer = typeof ArrayBuffer !== "undefined";
-    var supportsBlob = typeof Blob === "function";
+    var supportsBlob = (function () {
+        try {
+            return !!new Blob();
+        } catch (e) {
+            return false;
+        }
+    })();
     var sinonXhr = { XMLHttpRequest: global.XMLHttpRequest };
     sinonXhr.GlobalXMLHttpRequest = global.XMLHttpRequest;
     sinonXhr.GlobalActiveXObject = global.ActiveXObject;
@@ -13540,10 +13581,11 @@ if (typeof sinon === "undefined") {
     // and uploadError.
     function UploadProgress() {
         this.eventListeners = {
-            progress: [],
-            load: [],
             abort: [],
-            error: []
+            error: [],
+            load: [],
+            loadend: [],
+            progress: []
         };
     }
 
@@ -13587,7 +13629,7 @@ if (typeof sinon === "undefined") {
         }
 
         var xhr = this;
-        var events = ["loadstart", "load", "abort", "loadend"];
+        var events = ["loadstart", "load", "abort", "error", "loadend"];
 
         function addEventListener(eventName) {
             xhr.addEventListener(eventName, function (event) {
@@ -13910,6 +13952,7 @@ if (typeof sinon === "undefined") {
                 this.readyState = state;
 
                 var readyStateChangeEvent = new sinon.Event("readystatechange", false, false, this);
+                var event, progress;
 
                 if (typeof this.onreadystatechange === "function") {
                     try {
@@ -13919,16 +13962,29 @@ if (typeof sinon === "undefined") {
                     }
                 }
 
-                switch (this.readyState) {
-                    case FakeXMLHttpRequest.DONE:
-                        if (supportsProgress) {
-                            this.upload.dispatchEvent(new sinon.ProgressEvent("progress", {loaded: 100, total: 100}));
-                            this.dispatchEvent(new sinon.ProgressEvent("progress", {loaded: 100, total: 100}));
-                        }
-                        this.upload.dispatchEvent(new sinon.Event("load", false, false, this));
-                        this.dispatchEvent(new sinon.Event("load", false, false, this));
-                        this.dispatchEvent(new sinon.Event("loadend", false, false, this));
-                        break;
+                if (this.readyState === FakeXMLHttpRequest.DONE) {
+                    // ensure loaded and total are numbers
+                    progress = {
+                      loaded: this.progress || 0,
+                      total: this.progress || 0
+                    };
+
+                    if (this.status === 0) {
+                        event = this.aborted ? "abort" : "error";
+                    }
+                    else {
+                        event = "load";
+                    }
+
+                    if (supportsProgress) {
+                        this.upload.dispatchEvent(new sinon.ProgressEvent("progress", progress, this));
+                        this.upload.dispatchEvent(new sinon.ProgressEvent(event, progress, this));
+                        this.upload.dispatchEvent(new sinon.ProgressEvent("loadend", progress, this));
+                    }
+
+                    this.dispatchEvent(new sinon.ProgressEvent("progress", progress, this));
+                    this.dispatchEvent(new sinon.ProgressEvent(event, progress, this));
+                    this.dispatchEvent(new sinon.ProgressEvent("loadend", progress, this));
                 }
 
                 this.dispatchEvent(readyStateChangeEvent);
@@ -14007,14 +14063,15 @@ if (typeof sinon === "undefined") {
                 }
 
                 this.readyState = FakeXMLHttpRequest.UNSENT;
+            },
 
-                this.dispatchEvent(new sinon.Event("abort", false, false, this));
+            error: function error() {
+                clearResponse(this);
+                this.errorFlag = true;
+                this.requestHeaders = {};
+                this.responseHeaders = {};
 
-                this.upload.dispatchEvent(new sinon.Event("abort", false, false, this));
-
-                if (typeof this.onerror === "function") {
-                    this.onerror();
-                }
+                this.readyStateChange(FakeXMLHttpRequest.DONE);
             },
 
             getResponseHeader: function getResponseHeader(header) {
@@ -14080,6 +14137,7 @@ if (typeof sinon === "undefined") {
                 } else if (this.responseType === "" && isXmlContentType(contentType)) {
                     this.responseXML = FakeXMLHttpRequest.parseXML(this.responseText);
                 }
+                this.progress = body.length;
                 this.readyStateChange(FakeXMLHttpRequest.DONE);
             },
 
